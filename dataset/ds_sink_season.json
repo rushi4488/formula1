@@ -1,0 +1,34 @@
+{
+	"name": "ds_sink_season",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_sink_season",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"directiory_path": {
+				"type": "String"
+			},
+			"file_path": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@dataset().file_path",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().directiory_path",
+					"type": "Expression"
+				},
+				"fileSystem": "formula1"
+			}
+		},
+		"schema": {}
+	}
+}
