@@ -259,12 +259,12 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('Lookup_raceSchedule').output",
+						"value": "@activity('Lookup_raceSchedule').output.value",
 						"type": "Expression"
 					},
 					"activities": [
 						{
-							"name": "pipeline2",
+							"name": "Execute Pipeline1",
 							"type": "ExecutePipeline",
 							"dependsOn": [],
 							"policy": {
@@ -276,29 +276,27 @@
 									"referenceName": "pipeline2",
 									"type": "PipelineReference"
 								},
-								"waitOnCompletion": true
-							}
-						},
-						{
-							"name": "pipeline1",
-							"type": "ExecutePipeline",
-							"dependsOn": [],
-							"policy": {
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"pipeline": {
-									"referenceName": "pipeline3",
-									"type": "PipelineReference"
-								},
-								"waitOnCompletion": true
+								"waitOnCompletion": true,
+								"parameters": {
+									"year_list": {
+										"value": "@item().MRData.RaceTable.Races",
+										"type": "Expression"
+									}
+								}
 							}
 						}
 					]
 				}
 			}
 		],
+		"variables": {
+			"season": {
+				"type": "String"
+			},
+			"round": {
+				"type": "String"
+			}
+		},
 		"annotations": []
 	}
 }
