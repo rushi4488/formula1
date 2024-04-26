@@ -1,0 +1,9 @@
+{
+	"name": "formulaOne111",
+	"location": "centralindia",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "55cf9abf-9553-4ff4-bb6a-12e9d875aa2e",
+		"tenantId": "2aedac39-6173-462c-9d3b-ced105e2092e"
+	}
+}
