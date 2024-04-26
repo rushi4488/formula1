@@ -1,0 +1,116 @@
+{
+	"name": "ds_source_raceSchedule",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_sink_raceSchedule",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"raceScghedule_directory_path": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": {
+					"value": "@dataset().raceScghedule_directory_path",
+					"type": "Expression"
+				},
+				"fileSystem": "formula1"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"MRData": {
+					"type": "object",
+					"properties": {
+						"xmlns": {
+							"type": "string"
+						},
+						"series": {
+							"type": "string"
+						},
+						"url": {
+							"type": "string"
+						},
+						"limit": {
+							"type": "string"
+						},
+						"offset": {
+							"type": "string"
+						},
+						"total": {
+							"type": "string"
+						},
+						"RaceTable": {
+							"type": "object",
+							"properties": {
+								"season": {
+									"type": "string"
+								},
+								"Races": {
+									"type": "array",
+									"items": {
+										"type": "object",
+										"properties": {
+											"season": {
+												"type": "string"
+											},
+											"round": {
+												"type": "string"
+											},
+											"url": {
+												"type": "string"
+											},
+											"raceName": {
+												"type": "string"
+											},
+											"Circuit": {
+												"type": "object",
+												"properties": {
+													"circuitId": {
+														"type": "string"
+													},
+													"url": {
+														"type": "string"
+													},
+													"circuitName": {
+														"type": "string"
+													},
+													"Location": {
+														"type": "object",
+														"properties": {
+															"lat": {
+																"type": "string"
+															},
+															"long": {
+																"type": "string"
+															},
+															"locality": {
+																"type": "string"
+															},
+															"country": {
+																"type": "string"
+															}
+														}
+													}
+												}
+											},
+											"date": {
+												"type": "string"
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
