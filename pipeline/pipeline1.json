@@ -203,6 +203,8 @@
 			{
 				"name": "Lookup_raceSchedule",
 				"type": "Lookup",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "ForEach1",
@@ -248,6 +250,8 @@
 			{
 				"name": "ForEach_on_raceScheduleData",
 				"type": "ForEach",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Lookup_raceSchedule",
@@ -262,6 +266,7 @@
 						"value": "@activity('Lookup_raceSchedule').output.value",
 						"type": "Expression"
 					},
+					"isSequential": false,
 					"activities": [
 						{
 							"name": "Execute Pipeline1",
@@ -287,6 +292,76 @@
 						}
 					]
 				}
+			},
+			{
+				"name": "Copy_drivers_data",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "ForEach_on_raceScheduleData",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "JsonSource",
+						"storeSettings": {
+							"type": "HttpReadSettings",
+							"requestMethod": "GET"
+						},
+						"formatSettings": {
+							"type": "JsonReadSettings"
+						}
+					},
+					"sink": {
+						"type": "JsonSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "JsonWriteSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_source_season",
+						"type": "DatasetReference",
+						"parameters": {
+							"relative_url": {
+								"value": "@concat('drivers','.json')",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_sink_season",
+						"type": "DatasetReference",
+						"parameters": {
+							"directiory_path": {
+								"value": "@concat('bronze','/','driversInfo','/',formatDateTime(utcNow(),'yyyy-MM-dd'))",
+								"type": "Expression"
+							},
+							"file_path": {
+								"value": "@concat('drivers','_','Info')",
+								"type": "Expression"
+							}
+						}
+					}
+				]
 			}
 		],
 		"variables": {
