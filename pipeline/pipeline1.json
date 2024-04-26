@@ -225,6 +225,7 @@
 						"storeSettings": {
 							"type": "AzureBlobFSReadSettings",
 							"recursive": true,
+							"wildcardFileName": "*.json",
 							"enablePartitionDiscovery": false
 						},
 						"formatSettings": {
@@ -236,12 +237,65 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"raceScghedule_directory_path": {
-								"value": "@concat('bronze/raceSchedule/',)",
+								"value": "@concat('bronze/raceSchedule/',formatDateTime(utcNow(), 'yyyy-MM-dd'))",
 								"type": "Expression"
 							}
 						}
 					},
 					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "ForEach_on_raceScheduleData",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Lookup_raceSchedule",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Lookup_raceSchedule').output",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "pipeline2",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"policy": {
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "pipeline2",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true
+							}
+						},
+						{
+							"name": "pipeline1",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"policy": {
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "pipeline3",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true
+							}
+						}
+					]
 				}
 			}
 		],
