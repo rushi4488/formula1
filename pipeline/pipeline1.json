@@ -5,8 +5,6 @@
 			{
 				"name": "copy_season_data",
 				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -67,8 +65,6 @@
 			{
 				"name": "Lookup_season_data",
 				"type": "Lookup",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "copy_season_data",
@@ -117,8 +113,6 @@
 			{
 				"name": "ForEach1",
 				"type": "ForEach",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Lookup_season_data",
@@ -203,8 +197,6 @@
 			{
 				"name": "Lookup_raceSchedule",
 				"type": "Lookup",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "ForEach1",
@@ -250,8 +242,6 @@
 			{
 				"name": "ForEach_on_raceScheduleData",
 				"type": "ForEach",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Lookup_raceSchedule",
@@ -362,6 +352,74 @@
 						}
 					}
 				]
+			},
+			{
+				"name": "Lookup1",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "ForEach1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzurePostgreSqlSource",
+						"query": {
+							"value": "INSERT INTO formula1.activity_log\n(task_id, task_name, status, \"date\")\nVALUES('1', 'copy_season_data', 'success', '@{utcnow()}');\n\n\nINSERT INTO formula1.activity_log\n(task_id, task_name, status, \"date\")\nVALUES('2', 'copy_raceSchedule_data', 'success', '@{utcnow()}');\n",
+							"type": "Expression"
+						},
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "ds1_postgresssql",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "Lookup2",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "ForEach_on_raceScheduleData",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzurePostgreSqlSource",
+						"query": {
+							"value": "INSERT INTO formula1.activity_log\n(task_id, task_name, status, \"date\")\nVALUES('1', 'copy_raceResult_data', 'success', '@{utcnow()}');\n\nINSERT INTO formula1.activity_log\n(task_id, task_name, status, \"date\")\nVALUES('1', 'copy_qualifying_data', 'success', '@{utcnow()}');",
+							"type": "Expression"
+						},
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "ds1_postgresssql",
+						"type": "DatasetReference"
+					}
+				}
 			}
 		],
 		"variables": {
