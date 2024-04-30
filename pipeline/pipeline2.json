@@ -14,7 +14,7 @@
 					},
 					"activities": [
 						{
-							"name": "Copy_raceSchedule_data",
+							"name": "Copy_raceResult_data",
 							"type": "Copy",
 							"dependsOn": [],
 							"policy": {
@@ -53,7 +53,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"relative_url": {
-											"value": "@concat(item().season,'/',item().round,'/','results')",
+											"value": "@concat(item().season,'/',item().round,'/','results','.json')",
 											"type": "Expression"
 										}
 									}
